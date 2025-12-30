@@ -1,0 +1,28 @@
+{
+    "dashboard": {
+        "myRequests": "ನನ್ನ ಸೇವೆ ಅಭ್ಯರ್ಥನೆಗಳು",
+        "newRequest": "ಹೊಸ ಅಭ್ಯರ್ಥನೆ",
+        "myQuotations": "ನನ್ನ ಉದ್ಧೃತಿಗಳು",
+        "myPayments": "ನನ್ನ ಪಾವತಿಗಳು",
+        "serviceCode": "ಸೇವೆ ಕೋಡ್",
+        "status": "ಸ್ಥಿತಿ",
+        "createdDate": "ರಚಿಸಿದ ದಿನಾಂಕ",
+        "amount": "ಪ್ರಮಾಣ",
+        "action": "ಕ್ರಿಯೆ",
+        "view": "ನೋಡು",
+        "download": "ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ",
+        "approve": "ಅನುಮೋದಿಸಿ",
+        "reject": "ತಿರಸ್ಕರಿಸಿ",
+        "pay": "ಈಗ ಪಾವತಿ ಮಾಡಿ",
+        "noData": "ಯಾವುದೇ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ",
+        "welcome": "ಸ್ವಾಗತ",
+        "lastUpdate": "ಕೊನೆಯ ನವೀಕರಣ",
+        "allServices": "ಎಲ್ಲಾ ಸೇವೆಗಳು",
+        "pendingApproval": "ಅನುಮೋದನಕ್ಕೆ ಕಾಯುತ್ತಿದೆ",
+        "awaitingPayment": "ಪಾವತಿಗೆ ಕಾಯುತ್ತಿದೆ",
+        "inProgress": "ಪ್ರಗತಿಯಲ್ಲಿ",
+        "completed": "ಪೂರ್ಣಗೊಂಡಿದೆ",
+        "totalSpent": "ಒಟ್ಟು ಖರ್ಚು",
+        "activeProjects": "ಸಕ್ರಿಯ ಯೋಜನೆಗಳು"
+    }
+}

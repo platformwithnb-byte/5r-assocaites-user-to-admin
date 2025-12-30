@@ -1,0 +1,207 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  phone     String?
+  role      Role     @default(USER)
+  address   String?
+  city      String?
+  pincode   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  serviceRequests ServiceRequest[]
+  payments        Payment[]
+  reminders       Reminder[]
+
+  @@index([email])
+  @@index([role])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  serviceRequests ServiceRequest[]
+
+  @@index([code])
+}
+
+model ServiceRequest {
+  id             String   @id @default(cuid())
+  serviceCode    String
+  userId         String
+  status         WorkflowStatus @default(REQUESTED)
+  requirements   String
+  location       String
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service      Service    @relation(fields: [serviceCode], references: [code])
+  quotation    Quotation?
+  payments     Payment[]
+  workProgress WorkProgress[]
+  reminders    Reminder[]
+
+  @@index([userId])
+  @@index([serviceCode])
+  @@index([status])
+}
+
+enum WorkflowStatus {
+  REQUESTED
+  QUOTED
+  APPROVED
+  PAYMENT
+  IN_PROGRESS
+  COMPLETED
+}
+
+model Quotation {
+  id                    String   @id @default(cuid())
+  serviceRequestId      String   @unique
+  baseServiceAmount     Float
+  serviceTax            Float
+  gstAmount             Float
+  totalPrice            Float
+  quotationDate         DateTime @default(now())
+  approvalDate          DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  // Relations
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  payments       Payment[]
+
+  @@index([serviceRequestId])
+}
+
+model Milestone {
+  id           String   @id @default(cuid())
+  quotationId  String
+  percentage   Float
+  amount       Float
+  description  String?
+  dueDate      DateTime?
+  completed    Boolean  @default(false)
+  completedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  payments  Payment[]
+
+  @@index([quotationId])
+}
+
+model Payment {
+  id              String   @id @default(cuid())
+  quotationId     String
+  serviceRequestId String
+  userId          String
+  milestoneId     String?
+  amount          Float
+  paymentType     PaymentType
+  status          PaymentStatus @default(PENDING)
+  razorpayOrderId String?
+  razorpayPaymentId String?
+  dueDate         DateTime?
+  paidDate        DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Relations
+  quotation      Quotation       @relation(fields: [quotationId], references: [id], onDelete: Cascade)
+  serviceRequest ServiceRequest  @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  milestone      Milestone?      @relation(fields: [milestoneId], references: [id])
+
+  @@index([quotationId])
+  @@index([serviceRequestId])
+  @@index([userId])
+  @@index([status])
+}
+
+enum PaymentType {
+  ADVANCE
+  FULL
+  MILESTONE
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  REFUNDED
+}
+
+model WorkProgress {
+  id               String   @id @default(cuid())
+  serviceRequestId String
+  description      String
+  mediaUrls        String[] // JSON array of file paths
+  uploadedAt       DateTime @default(now())
+  createdAt        DateTime @default(now())
+
+  // Relations
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+
+  @@index([serviceRequestId])
+}
+
+model Reminder {
+  id               String   @id @default(cuid())
+  serviceRequestId String
+  userId           String
+  reminderType     ReminderType
+  message          String
+  sent             Boolean  @default(false)
+  sentAt           DateTime?
+  scheduledFor     DateTime
+  createdAt        DateTime @default(now())
+
+  // Relations
+  serviceRequest ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([sent])
+  @@index([scheduledFor])
+}
+
+enum ReminderType {
+  QUOTATION_PENDING
+  PAYMENT_DUE
+  PAYMENT_OVERDUE
+  MILESTONE_COMPLETED
+  PROJECT_COMPLETED
+}

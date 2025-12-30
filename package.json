@@ -1,0 +1,42 @@
+{
+    "name": "5r-associates-comms-platform",
+    "version": "1.0.0",
+    "description": "Residential Construction Service Platform with e-commerce workflow",
+    "type": "module",
+    "main": "backend/server.js",
+    "scripts": {
+        "dev": "node backend/server.js",
+        "start": "node backend/server.js",
+        "prisma:generate": "prisma generate",
+        "prisma:migrate": "prisma migrate dev",
+        "prisma:push": "prisma db push"
+    },
+    "keywords": [
+        "construction",
+        "service",
+        "painting",
+        "renovation",
+        "quotation",
+        "payment"
+    ],
+    "author": "5R Associates",
+    "license": "ISC",
+    "dependencies": {
+        "@prisma/client": "^5.8.0",
+        "bcryptjs": "^2.4.3",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2",
+        "jsonwebtoken": "^9.1.2",
+        "multer": "^1.4.5-lts.1",
+        "node-cron": "^3.0.3",
+        "nodemailer": "^6.9.7",
+        "pdfkit": "^0.13.0",
+        "razorpay": "^2.9.2",
+        "sequelize": "^6.35.2",
+        "uuid": "^9.0.1"
+    },
+    "devDependencies": {
+        "prisma": "^5.8.0"
+    }
+}

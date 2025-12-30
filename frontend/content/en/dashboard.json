@@ -1,0 +1,28 @@
+{
+    "dashboard": {
+        "myRequests": "My Service Requests",
+        "newRequest": "New Request",
+        "myQuotations": "My Quotations",
+        "myPayments": "My Payments",
+        "serviceCode": "Service Code",
+        "status": "Status",
+        "createdDate": "Created Date",
+        "amount": "Amount",
+        "action": "Action",
+        "view": "View",
+        "download": "Download",
+        "approve": "Approve",
+        "reject": "Reject",
+        "pay": "Pay Now",
+        "noData": "No data available",
+        "welcome": "Welcome",
+        "lastUpdate": "Last Updated",
+        "allServices": "All Services",
+        "pendingApproval": "Pending Approval",
+        "awaitingPayment": "Awaiting Payment",
+        "inProgress": "In Progress",
+        "completed": "Completed",
+        "totalSpent": "Total Amount Spent",
+        "activeProjects": "Active Projects"
+    }
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - 5R Associates</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">5R Associates - Admin</div>
+                <nav class="nav">
+                    <a href="dashboard.html" data-i18n="dashboard.allServices">All Services</a>
+                    <a href="quotation.html" data-i18n="dashboard.myQuotations">Create Quotation</a>
+                    <div class="language-switcher">
+                        <button class="lang-btn" data-lang-toggle="en">EN</button>
+                        <button class="lang-btn" data-lang-toggle="kn">KN</button>
+                    </div>
+                    <button class="btn btn-outline" id="logoutBtn" style="padding: 0.5rem 1rem;">Logout</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin-top: 2rem;">
+        <div class="card">
+            <div class="card-header" data-i18n="dashboard.welcome">Welcome Admin</div>
+            <p>Admin Dashboard loading...</p>
+        </div>
+
+        <div class="card">
+            <div class="card-header" data-i18n="dashboard.pendingApproval">Pending Quotations</div>
+            <div id="quotationsTable">
+                <p data-i18n="dashboard.noData">No data available</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header" data-i18n="dashboard.awaitingPayment">Awaiting Payment</div>
+            <div id="paymentsTable">
+                <p data-i18n="dashboard.noData">No data available</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 5R Associates Communications. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { initI18n, setupLanguageSwitcher } from '../../js/i18n.js';
+        import { requireAuth, logoutUser, getUserData } from '../../js/utils.js';
+
+        // Protect page
+        requireAuth();
+
+        // Initialize
+        await initI18n('dashboard');
+        setupLanguageSwitcher('dashboard');
+
+        // Verify admin role
+        const userData = getUserData();
+        if (userData && userData.role !== 'ADMIN') {
+            window.location.href = '../user/dashboard.html';
+        }
+
+        // Setup logout
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            logoutUser();
+        });
+    </script>
+</body>
+
+</html>

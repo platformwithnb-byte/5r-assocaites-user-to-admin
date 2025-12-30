@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - 5R Associates</title>
+    <link rel="stylesheet" href="../../css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="card" style="max-width: 500px; margin: 3rem auto;">
+            <div class="card-header" data-i18n="auth.signup">Sign Up</div>
+
+            <form id="signupForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="firstName" data-i18n="auth.firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName" data-i18n="auth.lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" data-i18n="auth.email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone" data-i18n="auth.phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="role" data-i18n="auth.role">Role</label>
+                    <select id="role" name="role" required>
+                        <option value="USER" data-i18n="auth.userRole">Client</option>
+                        <option value="ADMIN" data-i18n="auth.adminRole">Service Provider</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" data-i18n="auth.address">Address</label>
+                    <input type="text" id="address" name="address">
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="city" data-i18n="auth.city">City</label>
+                        <input type="text" id="city" name="city">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pincode" data-i18n="auth.pincode">Pincode</label>
+                        <input type="text" id="pincode" name="pincode">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" data-i18n="auth.password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" data-i18n="auth.confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="termsAccept" name="termsAccept" required>
+                        <span data-i18n="auth.termsAccept">I agree to the terms and conditions</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;" data-i18n="auth.signup">
+                    Sign Up
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
+                <span data-i18n="auth.haveAccount">Already have an account?</span>
+                <a href="login.html" data-i18n="auth.loginHere">Login here</a>
+            </div>
+
+            <div style="text-align: center; margin-top: 1rem;">
+                <div class="language-switcher">
+                    <button class="lang-btn" data-lang-toggle="en">English</button>
+                    <button class="lang-btn" data-lang-toggle="kn">ಕನ್ನಡ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initI18n, setupLanguageSwitcher } from '../../js/i18n.js';
+        import { authAPI, setToken } from '../../js/api.js';
+        import { showNotification, validateEmail, validatePhone } from '../../js/utils.js';
+
+        // Initialize
+        await initI18n('auth');
+        setupLanguageSwitcher('auth');
+
+        // Check if already logged in
+        const token = localStorage.getItem('token');
+        if (token) {
+            window.location.href = '../../pages/user/dashboard.html';
+        }
+
+        // Handle form submission
+        document.getElementById('signupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                role: document.getElementById('role').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                pincode: document.getElementById('pincode').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+            };
+
+            // Validation
+            if (!validateEmail(formData.email)) {
+                showNotification('Invalid email address', 'error');
+                return;
+            }
+
+            if (!validatePhone(formData.phone)) {
+                showNotification('Invalid phone number (10 digits required)', 'error');
+                return;
+            }
+
+            if (formData.password.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            if (formData.password !== formData.confirmPassword) {
+                showNotification('Passwords do not match', 'error');
+                return;
+            }
+
+            try {
+                const response = await authAPI.signup(formData);
+
+                showNotification('Account created successfully. Redirecting to login...', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            } catch (error) {
+                showNotification(error.data?.error || 'Sign up failed', 'error');
+            }
+        });
+    </script>
+</body>
+
+</html>
