@@ -1,9 +1,16 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { PrismaClient } from '@prisma/client';
 import { config } from './config/config.js';
 import { authenticateToken, authorize } from './middleware/auth.js';
 import { validateWorkflowTransition } from './middleware/workflow.js';
+import authRoutes from './routes/authRoutes.js';
+
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Initialize Prisma
 const prisma = new PrismaClient();
@@ -16,8 +23,24 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Serve static files for uploads
+// Serve static files - Frontend
+const frontendPath = path.join(__dirname, '..', 'frontend');
+app.use('/frontend', express.static(frontendPath));
+app.use('/css', express.static(path.join(frontendPath, 'css')));
+app.use('/js', express.static(path.join(frontendPath, 'js')));
+app.use('/content', express.static(path.join(frontendPath, 'content')));
+
+// Serve uploads directory
 app.use('/uploads', express.static(config.upload.uploadDir));
+
+// Serve generated PDFs
+const pdfPath = path.join(__dirname, '..', 'generated_pdfs');
+app.use('/pdfs', express.static(pdfPath));
+
+// Root route - redirect to login
+app.get('/', (req, res) => {
+    res.redirect('/frontend/pages/auth/login.html');
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -25,11 +48,12 @@ app.get('/health', (req, res) => {
         status: 'OK',
         timestamp: new Date().toISOString(),
         environment: config.nodeEnv,
+        database: 'connected'
     });
 });
 
-// API Routes (to be implemented)
-// app.use('/api/auth', authRoutes);
+// API Routes (to be implemented in Phase 2)
+app.use('/api/auth', authRoutes);
 // app.use('/api/requests', requestRoutes);
 // app.use('/api/quotations', quotationRoutes);
 // app.use('/api/payments', paymentRoutes);

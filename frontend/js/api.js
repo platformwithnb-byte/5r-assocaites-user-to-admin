@@ -42,10 +42,21 @@ const getHeaders = (includeAuth = true) => {
  * Handle API response
  */
 const handleResponse = async (response) => {
-    const data = await response.json();
+    let data;
+
+    try {
+        data = await response.json();
+    } catch (e) {
+        // If response is not JSON, create error from status
+        data = { message: `HTTP ${response.status}` };
+    }
 
     if (!response.ok) {
-        const error = new Error(data.error || `HTTP ${response.status}`);
+        // Log the error response for debugging
+        console.error('Backend error response:', data);
+
+        const errorMessage = data.message || data.error || `HTTP ${response.status}`;
+        const error = new Error(errorMessage);
         error.status = response.status;
         error.data = data;
         throw error;
@@ -67,6 +78,12 @@ const apiRequest = async (method, endpoint, body = null, options = {}) => {
     if (body) {
         config.body = JSON.stringify(body);
     }
+
+    // Log request for debugging
+    console.log(`API Request [${method} ${endpoint}]:`, {
+        body: body ? body : 'no body',
+        headers: config.headers,
+    });
 
     try {
         const response = await fetch(url, config);

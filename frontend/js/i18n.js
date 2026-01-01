@@ -13,7 +13,7 @@ let translations = {};
 export const initI18n = async (pageContent = 'common') => {
     try {
         // Load the appropriate language file for the page
-        const response = await fetch(`/content/${currentLanguage}/${pageContent}.json`);
+        const response = await fetch(`/frontend/content/${currentLanguage}/${pageContent}.json`);
 
         if (!response.ok) {
             throw new Error(`Failed to load language file: ${pageContent}.json`);

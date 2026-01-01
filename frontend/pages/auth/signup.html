@@ -127,6 +127,7 @@
                 pincode: document.getElementById('pincode').value,
                 password: document.getElementById('password').value,
                 confirmPassword: document.getElementById('confirmPassword').value,
+                termsAccept: document.getElementById('termsAccept').checked,
             };
 
             // Validation
@@ -159,7 +160,7 @@
                     window.location.href = 'login.html';
                 }, 2000);
             } catch (error) {
-                showNotification(error.data?.error || 'Sign up failed', 'error');
+                showNotification(error.data?.message || error.message || 'Sign up failed', 'error');
             }
         });
     </script>

@@ -24,6 +24,13 @@ lerna-debug.log*
 backend/uploads/*
 !backend/uploads/.gitkeep
 
+# Temporary files (remove before hosting)
+temp/
+temporary/
+*.tmp
+*.bak
+*.backup
+
 # IDE
 .vscode/
 .idea/

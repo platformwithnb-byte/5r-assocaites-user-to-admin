@@ -1,0 +1,8 @@
+# Generated PDFs
+
+This folder stores automatically generated PDF files:
+- Quotations
+- Invoices
+- Work completion certificates
+
+Files are generated using PDFKit and served via /pdfs/ route.

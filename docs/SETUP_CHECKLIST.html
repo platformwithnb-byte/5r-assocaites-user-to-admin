@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5R Associates - Setup Checklist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-number {
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .checklist-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .checklist-item:hover {
+            background: #f0f1ff;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.1);
+        }
+
+        .checklist-item.completed {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .item-description {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin-top: 8px;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .status-bar {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .progress {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .checklist-item {
+                flex-direction: column;
+            }
+
+            .checkbox {
+                margin-top: 0;
+            }
+        }
+
+        .time-estimate {
+            background: #fff3e0;
+            color: #e65100;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        .difficulty.easy {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .difficulty.medium {
+            background: #ffe0b2;
+            color: #e65100;
+        }
+
+        .difficulty.hard {
+            background: #ffcccc;
+            color: #c62828;
+        }
+
+        .help-btn {
+            background: #4caf50;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 8px;
+            margin-left: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .help-btn:hover {
+            background: #45a049;
+        }
+
+        .help-btn.video {
+            background: #f44336;
+        }
+
+        .help-btn.video:hover {
+            background: #da190b;
+        }
+
+        .help-btn.docs {
+            background: #2196F3;
+        }
+
+        .help-btn.docs:hover {
+            background: #0b7dda;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 5R Associates Setup Checklist</h1>
+            <p>Complete these steps to make Sign Up work</p>
+        </div>
+
+        <div class="content">
+            <!-- PHASE 1: Prerequisites -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-number">1</div>
+                    <span>Prerequisites & Setup</span>
+                </div>
+
+                <!-- Item 1: Install Node Modules -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-1" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Install Node Modules
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Install all project dependencies from package.json
+                        </div>
+                        <div class="code-block">npm install</div>
+                        <button class="copy-btn" onclick="copyToClipboard('npm install')">Copy Command</button>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=P3aKRdUyr0s')">📺 Watch Tutorial</button>
+                        <button class="help-btn docs"
+                            onclick="openLink('https://docs.npmjs.com/cli/v8/commands/npm-install')">📖
+                            Documentation</button>
+                    </div>
+                </div>
+
+                <!-- Item 2: PostgreSQL Setup -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-2" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Install PostgreSQL
+                            <span class="difficulty medium">Medium</span>
+                        </div>
+                        <div class="item-description">
+                            Download and install PostgreSQL 14+ from postgresql.org. Remember your password!
+                        </div>
+                        <div class="code-block">Version: PostgreSQL 14 or higher</div>
+                        <div class="time-estimate">⏱️ 10-15 minutes</div>
+                        <button class="help-btn" onclick="openLink('https://www.postgresql.org/download/')">⬇️ Download
+                            PostgreSQL</button>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=BLH3s5eTL4Y')">📺 Install Guide
+                            (Windows)</button>
+                        <button class="help-btn docs"
+                            onclick="openLink('https://www.postgresql.org/docs/current/tutorial-install.html')">📖
+                            Documentation</button>
+                    </div>
+                </div>
+
+                <!-- Item 3: Create Database -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-3" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Create Database
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Create a new database named "5r_associates" in PostgreSQL
+                        </div>
+                        <div class="code-block">createdb 5r_associates</div>
+                        <button class="copy-btn" onclick="copyToClipboard('createdb 5r_associates')">Copy
+                            Command</button>
+                        <div class="time-estimate">⏱️ 1 minute</div>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=1UP_oB5q8Bk')">📺 Create Database
+                            Tutorial</button>
+                        <button class="help-btn docs"
+                            onclick="openLink('https://www.postgresql.org/docs/current/sql-createdatabase.html')">📖
+                            Documentation</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHASE 2: Configuration -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-number">2</div>
+                    <span>Environment Configuration</span>
+                </div>
+
+                <!-- Item 4: Create .env file -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-4" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Create .env File
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Copy .env.example to .env (this file is in the root directory)
+                        </div>
+                        <div class="code-block">cp .env.example .env</div>
+                        <button class="copy-btn" onclick="copyToClipboard('cp .env.example .env')">Copy Command</button>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=17UVejOw3zA')">📺 Environment Variables
+                            Explained</button>
+                        <button class="help-btn docs" onclick="openLink('https://www.npmjs.com/package/dotenv')">📖
+                            dotenv Documentation</button>
+                    </div>
+                </div>
+
+                <!-- Item 5: Configure DATABASE_URL -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-5" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Configure DATABASE_URL in .env
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Edit .env file and update the DATABASE_URL with your PostgreSQL credentials
+                        </div>
+                        <div class="code-block">
+                            DATABASE_URL="postgresql://username:password@localhost:5432/5r_associates"</div>
+                        <div style="color: #d32f2f; margin-top: 10px; font-size: 0.9rem;">
+                            ⚠️ Replace "username" and "password" with your PostgreSQL credentials
+                        </div>
+                        <button class="help-btn docs"
+                            onclick="openLink('https://www.prisma.io/docs/concepts/database-connectors/postgresql')">📖
+                            PostgreSQL Connection String</button>
+                    </div>
+                </div>
+
+                <!-- Item 6: Set JWT_SECRET -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-6" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Set JWT_SECRET in .env
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Generate a random string for JWT secret (used for authentication tokens)
+                        </div>
+                        <div class="code-block">JWT_SECRET="your-random-secret-key-min-32-characters-long"</div>
+                        <div class="time-estimate">⏱️ 2 minutes</div>
+                        <button class="help-btn"
+                            onclick="openLink('https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx')">🔑
+                            Generate Secret Key</button>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=7Q17ubqLfaM')">📺 JWT Tutorial</button>
+                        <button class="help-btn docs" onclick="openLink('https://jwt.io/introduction')">📖 JWT
+                            Documentation</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHASE 3: Database Setup -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-number">3</div>
+                    <span>Database Schema</span>
+                </div>
+
+                <!-- Item 7: Generate Prisma Client -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-7" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Generate Prisma Client
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Generate Prisma client files (required after any schema changes)
+                        </div>
+                        <div class="code-block">npm run prisma:generate</div>
+                        <button class="copy-btn" onclick="copyToClipboard('npm run prisma:generate')">Copy
+                            Command</button>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=RebA5J-rlwg')">📺 Prisma
+                            Tutorial</button>
+                        <button class="help-btn docs"
+                            onclick="openLink('https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/generating-prisma-client')">📖
+                            Prisma Generate Docs</button>
+                    </div>
+                </div>
+
+                <!-- Item 8: Push Schema to Database -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-8" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Push Schema to Database
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Create all tables in PostgreSQL database using Prisma schema
+                        </div>
+                        <div class="code-block">npm run prisma:push</div>
+                        <button class="copy-btn" onclick="copyToClipboard('npm run prisma:push')">Copy Command</button>
+                        <div class="time-estimate">⏱️ 2 minutes</div>
+                        <button class="help-btn docs"
+                            onclick="openLink('https://www.prisma.io/docs/concepts/components/prisma-migrate/db-push')">📖
+                            Prisma Push Docs</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHASE 4: Implement APIs -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-number">4</div>
+                    <span>Implement Authentication APIs (Phase 2)</span>
+                </div>
+
+                <!-- Item 9: Create authRoutes -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-9" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Create Auth Routes
+                            <span class="difficulty hard">Hard</span>
+                        </div>
+                        <div class="item-description">
+                            Create file: backend/routes/authRoutes.js with login, signup, logout endpoints
+                        </div>
+                        <div class="code-block">File: backend/routes/authRoutes.js (not implemented yet)</div>
+                        <div class="time-estimate">⏱️ 1-2 hours</div>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=Ud5xKCYQTjM')">📺 Express Routes
+                            Tutorial</button>
+                        <button class="help-btn docs"
+                            onclick="openLink('https://expressjs.com/en/guide/routing.html')">📖 Express
+                            Routing</button>
+                    </div>
+                </div>
+
+                <!-- Item 10: Create authController -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-10" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Create Auth Controller
+                            <span class="difficulty hard">Hard</span>
+                        </div>
+                        <div class="item-description">
+                            Create file: backend/controllers/authController.js with signup, login logic
+                        </div>
+                        <div class="code-block">File: backend/controllers/authController.js (not implemented yet)</div>
+                        <div class="time-estimate">⏱️ 1-2 hours</div>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=mbsmsi7l3r4')">📺 Authentication
+                            Tutorial</button>
+                        <button class="help-btn docs" onclick="openLink('https://www.npmjs.com/package/bcryptjs')">📖
+                            bcryptjs Docs</button>
+                    </div>
+                </div>
+
+                <!-- Item 11: Register Routes in Server -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-11" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Register Auth Routes in Server
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Add auth routes to backend/server.js after line 32 (where API routes start)
+                        </div>
+                        <div class="code-block">app.use('/api/auth', authRoutes);</div>
+                        <div class="time-estimate">⏱️ 5 minutes</div>
+                        <button class="help-btn docs"
+                            onclick="openLink('https://expressjs.com/en/guide/using-middleware.html')">📖 Express
+                            Middleware</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHASE 5: Start & Test -->
+            <div class="section">
+                <div class="section-title">
+                    <div class="section-number">5</div>
+                    <span>Start & Test</span>
+                </div>
+
+                <!-- Item 12: Start Server -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-12" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Start Backend Server
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Start the Express server in development mode
+                        </div>
+                        <div class="code-block">npm run dev</div>
+                        <button class="copy-btn" onclick="copyToClipboard('npm run dev')">Copy Command</button>
+                        <div style="color: #1976d2; margin-top: 10px; font-size: 0.9rem;">
+                            ✓ Server should start on http://localhost:5000
+                        </div>
+                        <button class="help-btn video"
+                            onclick="openLink('https://www.youtube.com/watch?v=-MTSQjw5DrM')">📺 Node.js Server
+                            Tutorial</button>
+                    </div>
+                </div>
+
+                <!-- Item 13: Test Sign Up -->
+                <div class="checklist-item">
+                    <input type="checkbox" class="checkbox" id="check-13" onchange="updateProgress()">
+                    <div class="item-content">
+                        <div class="item-title">
+                            Test Sign Up Page
+                            <span class="difficulty easy">Easy</span>
+                        </div>
+                        <div class="item-description">
+                            Open browser and test sign up form
+                        </div>
+                        <div class="code-block">http://localhost:5000/frontend/pages/auth/signup.html</div>
+                        <button class="copy-btn"
+                            onclick="copyToClipboard('http://localhost:5000/frontend/pages/auth/signup.html')">Copy
+                            URL</button>
+                        <button class="help-btn"
+                            onclick="openLink('http://localhost:5000/frontend/pages/auth/signup.html')">🚀 Open Sign Up
+                            Page</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div style="margin-bottom: 15px;">
+                    <strong>Progress:</strong>
+                </div>
+                <div class="progress">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;">
+                        <span id="progressText">0%</span>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-number" id="totalItems">13</div>
+                        <div class="stat-label">Total Items</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="completedItems">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number" id="remainingItems">13</div>
+                        <div class="stat-label">Remaining</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-message" id="successMessage">
+                <strong>✓ All steps completed!</strong><br>
+                You're ready to test the sign up functionality. Run <code>npm run dev</code> and open the sign up page.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = '5r-setup-checklist-progress';
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            const progress = {};
+            checkboxes.forEach((cb, index) => {
+                progress[`check-${index + 1}`] = cb.checked;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+        }
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const progress = JSON.parse(saved);
+                const checkboxes = document.querySelectorAll('.checkbox');
+                checkboxes.forEach((cb, index) => {
+                    const id = `check-${index + 1}`;
+                    if (progress[id] !== undefined) {
+                        cb.checked = progress[id];
+                    }
+                });
+            }
+        }
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('.checkbox');
+            const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+            const total = checkboxes.length;
+            const percentage = Math.round((checked / total) * 100);
+
+            // Update progress bar
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = percentage + '%';
+
+            // Update stats
+            document.getElementById('completedItems').textContent = checked;
+            document.getElementById('remainingItems').textContent = total - checked;
+
+            // Update item styling
+            document.querySelectorAll('.checklist-item').forEach((item, index) => {
+                if (checkboxes[index].checked) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            });
+
+            // Show success message
+            if (percentage === 100) {
+                document.getElementById('successMessage').classList.add('show');
+            } else {
+                document.getElementById('successMessage').classList.remove('show');
+            }
+
+            // Save to localStorage
+            saveProgress();
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        function openLink(url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
+
+        // Load progress on page load
+        window.addEventListener('DOMContentLoaded', function () {
+            loadProgress();
+            updateProgress();
+        });
+    </script>
+</body>
+
+</html>
