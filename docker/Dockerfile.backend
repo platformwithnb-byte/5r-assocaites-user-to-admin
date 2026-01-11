@@ -1,0 +1,45 @@
+# Backend API - Node.js + Express
+# Multi-stage build for production optimization
+
+FROM node:18-alpine AS builder
+
+WORKDIR /build
+
+# Copy package files
+COPY backend/package.json backend/package-lock.json* ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Copy node_modules from builder
+COPY --from=builder /build/node_modules ./node_modules
+
+# Copy application code
+COPY backend/src ./src
+COPY backend/prisma ./prisma
+COPY backend/server.js ./server.js
+COPY backend/.env.example ./.env
+
+# Create uploads directory with proper permissions
+RUN mkdir -p public/uploads && chmod 755 public/uploads
+
+# Expose API port
+EXPOSE 5000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD node -e "require('http').get('http://localhost:5000/health', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+
+# Use dumb-init to properly handle signals
+ENTRYPOINT ["dumb-init", "--"]
+
+# Start application
+CMD ["node", "server.js"]

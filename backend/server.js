@@ -7,6 +7,13 @@ import { config } from './config/config.js';
 import { authenticateToken, authorize } from './middleware/auth.js';
 import { validateWorkflowTransition } from './middleware/workflow.js';
 import authRoutes from './routes/authRoutes.js';
+import requestRoutes from './routes/requestRoutes.js';
+import serviceRoutes from './routes/serviceRoutes.js';
+import quotationRoutes from './routes/quotationRoutes.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+import progressRoutes from './routes/progressRoutes.js';
+import advancePaymentRoutes from './routes/advancePaymentRoutes.js';
+import invoiceRoutes from './routes/invoiceRoutes.js';
 
 // Get __dirname equivalent in ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -52,12 +59,15 @@ app.get('/health', (req, res) => {
     });
 });
 
-// API Routes (to be implemented in Phase 2)
+// API Routes
 app.use('/api/auth', authRoutes);
-// app.use('/api/requests', requestRoutes);
-// app.use('/api/quotations', quotationRoutes);
-// app.use('/api/payments', paymentRoutes);
-// app.use('/api/progress', progressRoutes);
+app.use('/api/requests', requestRoutes);
+app.use('/api/services', serviceRoutes);
+app.use('/api/quotations', quotationRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/advance-payments', advancePaymentRoutes);
+app.use('/api/invoices', invoiceRoutes);
 // app.use('/api/reminders', reminderRoutes);
 // app.use('/api/pdf', pdfRoutes);
 

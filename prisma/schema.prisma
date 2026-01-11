@@ -89,6 +89,7 @@ model ServiceRequest {
   userId            String
   serviceId         String
   status            WorkflowStatus @default(REQUESTED)
+  paymentStatus     String   @default("PENDING")  // PENDING, ADVANCE_REQUESTED, ADVANCE_PAID, COMPLETED
   description       String?
   location          String?
   preferredDate     DateTime?
@@ -102,6 +103,8 @@ model ServiceRequest {
   payments          Payment[]
   progressLogs      WorkProgress[]
   reminders         Reminder[]
+  advancePayments   AdvancePayment[]
+  invoices          Invoice[]
 
   @@index([userId])
   @@index([serviceId])
@@ -219,4 +222,58 @@ model Reminder {
   @@index([requestId])
   @@index([userId])
   @@index([dueDate])
+}
+model AdvancePayment {
+  id                String   @id @default(cuid())
+  requestId         String
+  progressId        String?
+  quotationId       String?
+  stage             String    // e.g., "Foundation", "Walls", "Roofing"
+  advanceAmount     Float
+  description       String?
+  requestedBy       String    // ADMIN user ID
+  requestedAt       DateTime  @default(now())
+  status            String    @default("PENDING")  // PENDING, APPROVED, PAID, PARTIAL, REJECTED
+  invoiceId         String?
+  paymentId         String?
+  notes             String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  request           ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId])
+  @@index([status])
+  @@index([quotationId])
+}
+
+model Invoice {
+  id                String   @id @default(cuid())
+  invoiceNumber     String   @unique
+  requestId         String
+  quotationId       String?
+  advancePaymentId  String?
+  companyName       String
+  gstNumber         String
+  gstRate           Float     @default(18)
+  itemDescription   String
+  baseAmount        Float
+  gstAmount         Float
+  totalAmount       Float
+  advanceAmount     Float     @default(0)
+  balanceAmount     Float
+  invoiceDate       DateTime  @default(now())
+  dueDate           DateTime?
+  status            String    @default("DRAFT")  // DRAFT, ISSUED, PAID, PARTIAL, CANCELLED
+  pdfPath           String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  request           ServiceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId])
+  @@index([status])
+  @@index([invoiceNumber])
 }

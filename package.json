@@ -9,7 +9,10 @@
         "start": "node backend/server.js",
         "prisma:generate": "prisma generate",
         "prisma:migrate": "prisma migrate dev",
-        "prisma:push": "prisma db push"
+        "prisma:push": "prisma db push",
+        "deploy-prep": "node scripts/deploy-prep.js",
+        "build-production": "node scripts/build-production.js",
+        "prebuild": "npm run deploy-prep"
     },
     "keywords": [
         "construction",
@@ -37,6 +40,7 @@
         "uuid": "^9.0.1"
     },
     "devDependencies": {
+        "fs-extra": "^11.3.3",
         "prisma": "^5.8.0"
     }
 }

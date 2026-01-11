@@ -54,3 +54,19 @@ coverage/
 # Temporary files
 *.tmp
 temp/
+
+# Development files (keep in repo but track separately)
+_development/data/
+_development/temp/
+
+# Production build output
+build/
+build-info.json
+
+# Runtime uploads (regenerated)
+uploads/*
+!uploads/.gitkeep
+generated_pdfs/*
+!generated_pdfs/.gitkeep
+database/*
+!database/.gitkeep

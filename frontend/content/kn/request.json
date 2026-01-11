@@ -1,0 +1,22 @@
+{
+    "newRequest": "ಹೊಸ ಸೇವೆಯ ಅಭ್ಯರ್ಥನೆ",
+    "newRequestDesc": "ನಿಮ್ಮ ಸೇವಾ ಅಭ್ಯರ್ಥನೆಯನ್ನು ಸಲ್ಲಿಸಲು ಕೆಳಗಿನ ವಿವರಗಳನ್ನು ಭರ್ತಿ ಮಾಡಿ",
+    "backToDashboard": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಹಿಂತಿರುಗಿ",
+    "selectService": "ಸೇವೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "chooseService": "ಸೇವೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ...",
+    "selectServiceHelper": "ನಿಮಗೆ ಬೇಕಾದ ಸೇವೆಯ ಪ್ರಕಾರವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+    "location": "ಸ್ಥಳ",
+    "locationPlaceholder": "ಕೆಲಸದ ಸ್ಥಳವನ್ನು ನಮೂದಿಸಿ",
+    "locationHelper": "ಕೆಲಸ ಎಲ್ಲಿ ಮಾಡಬೇಕು?",
+    "description": "ವಿವರಣೆ",
+    "descriptionPlaceholder": "ನಿಮ್ಮ ಅಗತ್ಯತೆಗಳನ್ನು ವಿವರವಾಗಿ ವಿವರಿಸಿ...",
+    "descriptionHelper": "ನಿಮ್ಮ ಅಗತ್ಯತೆಗಳ ಬಗ್ಗೆ ಸಾಧ್ಯವಾದಷ್ಟು ವಿವರವನ್ನು ಒದಗಿಸಿ",
+    "preferredDate": "ಆದ್ಯತೆಯ ಪ್ರಾರಂಭ ದಿನಾಂಕ",
+    "preferredDateHelper": "ನೀವು ಕೆಲಸ ಪ್ರಾರಂಭಿಸಲು ಯಾವಾಗ ಬಯಸುತ್ತೀರಿ?",
+    "cancel": "ರದ್ದುಮಾಡಿ",
+    "submitRequest": "ಅಭ್ಯರ್ಥನೆಯನ್ನು ಸಲ್ಲಿಸಿ",
+    "submitting": "ಸಲ್ಲಿಸಲಾಗುತ್ತಿದೆ...",
+    "requestSubmitted": "ಸೇವಾ ಅಭ್ಯರ್ಥನೆಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ!",
+    "requestFailed": "ಅಭ್ಯರ್ಥನೆ ಸಲ್ಲಿಸಲು ವಿಫಲವಾಗಿದೆ",
+    "pleaseSelectService": "ದಯವಿಟ್ಟು ಸೇವೆಯನ್ನು ಆಯ್ಕೆಮಾಡಿ"
+}

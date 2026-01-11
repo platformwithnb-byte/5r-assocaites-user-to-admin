@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Progress Management - 5R Associates</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-button.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .upload-form {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .file-upload {
+            border: 2px dashed #ddd;
+            padding: 30px;
+            text-align: center;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .file-preview {
+            margin-top: 15px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 150px;
+        }
+
+        .preview-item img,
+        .preview-item video {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .preview-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .progress-list {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .progress-info h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .progress-info .meta {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .progress-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .progress-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-complete {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-advance {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-advance:hover {
+            background: #e67e22;
+        }
+
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .progress-media {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .media-item {
+            width: 200px;
+            cursor: pointer;
+        }
+
+        .media-item img,
+        .media-item video {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-PAYMENT {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+
+        .status-IN_PROGRESS {
+            background: #74b9ff;
+            color: #0984e3;
+        }
+
+        .status-COMPLETED {
+            background: #55efc4;
+            color: #00b894;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        .btn-primary:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            padding: 12px 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1>Work Progress Management</h1>
+            <p>Upload work progress updates with photos and videos</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" data-tab="upload">Upload Progress</button>
+            <button class="tab-button" data-tab="manage">Manage Progress</button>
+        </div>
+
+        <!-- Upload Tab -->
+        <div id="upload-tab" class="tab-content active">
+            <div class="upload-form">
+                <h2>Upload New Progress Update</h2>
+                <div id="upload-message"></div>
+
+                <form id="progress-upload-form">
+                    <div class="form-group">
+                        <label for="request-select">Select Project *</label>
+                        <select id="request-select" required>
+                            <option value="">-- Select a project --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="title">Progress Title *</label>
+                        <input type="text" id="title" required placeholder="E.g., Foundation work completed">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Progress Description</label>
+                        <textarea id="description" placeholder="Describe the work completed in detail..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="completion">Completion Percentage</label>
+                        <input type="number" id="completion" min="0" max="100" value="0" placeholder="0-100">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Photo (Optional)</label>
+                        <div class="file-upload" id="image-upload-area">
+                            <input type="file" id="image-input" accept="image/*">
+                            <p>Click to upload image or drag and drop</p>
+                            <small>Supported formats: JPG, PNG, GIF (Max 50MB)</small>
+                        </div>
+                        <div id="image-preview" class="file-preview"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Video (Optional)</label>
+                        <div class="file-upload" id="video-upload-area">
+                            <input type="file" id="video-input" accept="video/*">
+                            <p>Click to upload video or drag and drop</p>
+                            <small>Supported formats: MP4, MOV, AVI (Max 50MB)</small>
+                        </div>
+                        <div id="video-preview" class="file-preview"></div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="upload-btn">
+                        Upload Progress Update
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Manage Tab -->
+        <div id="manage-tab" class="tab-content">
+            <div class="progress-list">
+                <h2>All Progress Updates</h2>
+                <div id="progress-items">
+                    <div class="loading">Loading progress updates...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { requestAPI, progressAPI } from '/js/api.js';
+
+        let selectedImage = null;
+        let selectedVideo = null;
+
+        // Tab switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabName = button.dataset.tab;
+
+                // Update active states
+                document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+                button.classList.add('active');
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+
+                // Load data when switching to manage tab
+                if (tabName === 'manage') {
+                    loadAllProgress();
+                }
+            });
+        });
+
+        // TEMP/TEST MODE: Load eligible requests from API
+        // When Razorpay integrated, API will verify real payments
+        async function loadRequests() {
+            try {
+                const response = await fetch('http://localhost:5000/api/progress/eligible', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to fetch eligible projects');
+                }
+
+                const eligibleRequests = data.data || [];
+                const select = document.getElementById('request-select');
+                select.innerHTML = '<option value="">-- Select a project --</option>';
+
+                // Show TEST MODE indicator if enabled
+                if (data.testMode) {
+                    const testIndicator = document.querySelector('.page-header');
+                    if (!testIndicator.querySelector('.test-mode-badge')) {
+                        const badge = document.createElement('div');
+                        badge.className = 'test-mode-badge';
+                        badge.innerHTML = '⚠️ TEST MODE - Razorpay not integrated yet';
+                        badge.style.cssText = `
+                            background: #fff3cd;
+                            border: 1px solid #ffc107;
+                            color: #856404;
+                            padding: 10px;
+                            margin: 10px 0;
+                            border-radius: 4px;
+                            font-weight: 500;
+                        `;
+                        testIndicator.appendChild(badge);
+                    }
+                }
+
+                eligibleRequests.forEach(req => {
+                    const option = document.createElement('option');
+                    option.value = req.id;
+                    option.textContent = `${req.requestCode} - ${req.service?.name || 'Unknown Service'} (${req.status})`;
+                    select.appendChild(option);
+                });
+
+                if (eligibleRequests.length === 0) {
+                    select.innerHTML = '<option value="">No eligible projects found</option>';
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                showMessage('Failed to load projects', 'error', 'upload-message');
+            }
+        }
+
+        // Image upload handling
+        const imageInput = document.getElementById('image-input');
+        const imageUploadArea = document.getElementById('image-upload-area');
+        const imagePreview = document.getElementById('image-preview');
+
+        imageUploadArea.addEventListener('click', () => imageInput.click());
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedImage = file;
+                previewFile(file, imagePreview, 'image');
+            }
+        });
+
+        // Video upload handling
+        const videoInput = document.getElementById('video-input');
+        const videoUploadArea = document.getElementById('video-upload-area');
+        const videoPreview = document.getElementById('video-preview');
+
+        videoUploadArea.addEventListener('click', () => videoInput.click());
+
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                selectedVideo = file;
+                previewFile(file, videoPreview, 'video');
+            }
+        });
+
+        // Preview uploaded files
+        function previewFile(file, container, type) {
+            container.innerHTML = '';
+
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.onclick = () => {
+                if (type === 'image') {
+                    selectedImage = null;
+                    imageInput.value = '';
+                } else {
+                    selectedVideo = null;
+                    videoInput.value = '';
+                }
+                container.innerHTML = '';
+            };
+
+            if (type === 'image') {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                previewItem.appendChild(img);
+            } else {
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+                video.controls = true;
+                previewItem.appendChild(video);
+            }
+
+            previewItem.appendChild(removeBtn);
+            container.appendChild(previewItem);
+        }
+
+        // Form submission
+        document.getElementById('progress-upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const requestId = document.getElementById('request-select').value;
+            const title = document.getElementById('title').value.trim();
+            const description = document.getElementById('description').value.trim();
+            const completionPercent = document.getElementById('completion').value;
+
+            if (!requestId) {
+                showMessage('Please select a project', 'error', 'upload-message');
+                return;
+            }
+
+            if (!title) {
+                showMessage('Please enter a title', 'error', 'upload-message');
+                return;
+            }
+
+            const uploadBtn = document.getElementById('upload-btn');
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+
+            try {
+                // Create FormData
+                const formData = new FormData();
+                formData.append('requestId', requestId);
+                formData.append('title', title);
+                formData.append('description', description);
+                formData.append('completionPercent', completionPercent);
+
+                if (selectedImage) {
+                    formData.append('image', selectedImage);
+                }
+
+                if (selectedVideo) {
+                    formData.append('video', selectedVideo);
+                }
+
+                const response = await fetch('http://localhost:5000/api/progress', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to upload progress');
+                }
+
+                showMessage('Progress update uploaded successfully!', 'success', 'upload-message');
+
+                // Reset form
+                document.getElementById('progress-upload-form').reset();
+                selectedImage = null;
+                selectedVideo = null;
+                imagePreview.innerHTML = '';
+                videoPreview.innerHTML = '';
+
+                // Reload requests
+                loadRequests();
+
+            } catch (error) {
+                console.error('Error uploading progress:', error);
+                showMessage(error.message || 'Failed to upload progress', 'error', 'upload-message');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Upload Progress Update';
+            }
+        });
+
+        // Load all progress updates
+        async function loadAllProgress() {
+            const container = document.getElementById('progress-items');
+            container.innerHTML = '<div class="loading">Loading progress updates...</div>';
+
+            try {
+                const response = await progressAPI.list();
+                const progressList = response.data || [];
+
+                if (progressList.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <p>No progress updates yet</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '';
+                progressList.forEach(progress => {
+                    const item = createProgressItem(progress);
+                    container.appendChild(item);
+                });
+
+            } catch (error) {
+                console.error('Error loading progress:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>Failed to load progress updates</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Create progress item element
+        function createProgressItem(progress) {
+            const div = document.createElement('div');
+            div.className = 'progress-item';
+
+            const date = new Date(progress.createdAt).toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            });
+
+            const hasMedia = (progress.photos && progress.photos.length > 0) || (progress.videos && progress.videos.length > 0);
+
+            div.innerHTML = `
+                <div class="progress-header">
+                    <div class="progress-info">
+                        <h3>${progress.title || 'Progress Update'}</h3>
+                        <div class="meta">
+                            <span>${progress.request?.requestCode || 'N/A'} - ${progress.request?.service?.name || 'Unknown'}</span>
+                            <span class="status-badge status-${progress.request?.status}">${progress.request?.status || 'UNKNOWN'}</span>
+                            <span> • ${date}</span>
+                            <span> • Completion: ${progress.completionPercent}%</span>
+                        </div>
+                    </div>
+                    <div class="progress-actions">
+                        ${progress.request?.status === 'IN_PROGRESS' ? `
+                            <button class="btn-advance" onclick="requestAdvancePayment('${progress.requestId}', '${progress.id}', '${progress.title}')">
+                                💰 Request Advance
+                            </button>
+                            <button class="btn-complete" onclick="markComplete('${progress.requestId}')">
+                                Mark as Completed
+                            </button>
+                        ` : ''}
+                        <button class="btn-delete" onclick="deleteProgress('${progress.id}')">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                ${progress.description ? `<p>${progress.description}</p>` : ''}
+                ${hasMedia ? `
+                    <div class="progress-media">
+                        ${progress.photos && progress.photos.map(photo => `
+                            <div class="media-item">
+                                <img src="${photo}" alt="Progress image" onclick="openMedia('${photo}', 'image')">
+                            </div>
+                        `).join('')}
+                        ${progress.videos && progress.videos.map(video => `
+                            <div class="media-item">
+                                <video src="${video}" controls></video>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            `;
+
+            return div;
+        }
+
+        // Delete progress
+        window.deleteProgress = async (id) => {
+            if (!confirm('Are you sure you want to delete this progress update?')) {
+                return;
+            }
+
+            try {
+                await progressAPI.delete(id);
+                loadAllProgress();
+            } catch (error) {
+                console.error('Error deleting progress:', error);
+                alert('Failed to delete progress update');
+            }
+        };
+
+        // Mark as completed
+        window.markComplete = async (requestId) => {
+            if (!confirm('Are you sure you want to mark this project as completed?')) {
+                return;
+            }
+
+            try {
+                await progressAPI.markAsCompleted(requestId);
+                loadAllProgress();
+                alert('Project marked as completed successfully!');
+            } catch (error) {
+                console.error('Error marking complete:', error);
+                alert('Failed to mark project as completed');
+            }
+        };
+
+        // Open media in new tab
+        window.openMedia = (url, type) => {
+            window.open(url, '_blank');
+        };
+
+        // Show message
+        function showMessage(text, type, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="alert alert-${type}">
+                    ${text}
+                </div>
+            `;
+
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Request Advance Payment
+        window.requestAdvancePayment = async (requestId, progressId, stage) => {
+            const amount = prompt('Enter Advance Amount (₹):', '');
+            if (!amount || isNaN(amount)) return;
+
+            const description = prompt('Advance Description (optional):', `Advance for ${stage}`);
+
+            try {
+                const response = await fetch('http://localhost:5000/api/advance-payments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({
+                        requestId,
+                        progressId,
+                        stage,
+                        advanceAmount: parseFloat(amount),
+                        description: description || `Advance for ${stage}`,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to request advance payment');
+                }
+
+                showMessage('Advance payment requested successfully! 💰', 'success', 'upload-message');
+
+                // Generate invoice for this advance
+                const invoiceRes = await fetch('http://localhost:5000/api/invoices', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    },
+                    body: JSON.stringify({
+                        advancePaymentId: data.data.id,
+                        requestId: requestId,
+                        quotationId: data.data.quotationId,
+                    }),
+                });
+
+                if (invoiceRes.ok) {
+                    const invoiceData = await invoiceRes.json();
+                    console.log('Invoice generated:', invoiceData.data.invoiceNumber);
+                }
+
+                // Reload progress list
+                loadAllProgress();
+            } catch (error) {
+                console.error('Error requesting advance payment:', error);
+                showMessage(error.message || 'Failed to request advance payment', 'error', 'upload-message');
+            }
+        };
+
+        // Initialize
+        loadRequests();
+    </script>
+</body>
+
+</html>

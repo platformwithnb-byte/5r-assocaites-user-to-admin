@@ -15,6 +15,7 @@
                 <div class="logo">5R Associates</div>
                 <nav class="nav">
                     <a href="dashboard.html" data-i18n="dashboard.myRequests">My Requests</a>
+                    <a href="quotations.html" data-i18n="dashboard.myQuotations">My Quotations</a>
                     <a href="new-request.html" data-i18n="dashboard.newRequest">New Request</a>
                     <div class="language-switcher">
                         <button class="lang-btn" data-lang-toggle="en">EN</button>
@@ -46,7 +47,8 @@
 
     <script type="module">
         import { initI18n, setupLanguageSwitcher } from '../../js/i18n.js';
-        import { requireAuth, logoutUser, getUserData } from '../../js/utils.js';
+        import { requireAuth, logoutUser, getUserData, formatDate, getStatusBadge } from '../../js/utils.js';
+        import { requestAPI } from '../../js/api.js';
 
         // Protect page
         requireAuth();
@@ -63,10 +65,148 @@
         // Display user data
         const userData = getUserData();
         if (userData) {
-            const firstName = userData.firstName || userData.email.split('@')[0];
+            const firstName = userData.name ? userData.name.split(' ')[0] : userData.email.split('@')[0];
             document.querySelector('[data-i18n="dashboard.welcome"]').textContent =
                 `Welcome, ${firstName}`;
         }
+
+        // Load and display requests
+        const loadRequests = async () => {
+            try {
+                const response = await requestAPI.list();
+
+                if (response.success && response.requests) {
+                    displayRequests(response.requests);
+                } else {
+                    document.getElementById('requestsTable').innerHTML =
+                        '<p data-i18n="dashboard.noRequests">No service requests yet</p>';
+                }
+            } catch (error) {
+                console.error('Error loading requests:', error);
+                document.getElementById('requestsTable').innerHTML =
+                    '<p style="color: #e74c3c;">Failed to load requests. Please try again.</p>';
+            }
+        };
+
+        // Display requests in table
+        const displayRequests = (requests) => {
+            if (!requests || requests.length === 0) {
+                document.getElementById('requestsTable').innerHTML =
+                    '<p data-i18n="dashboard.noRequests">No service requests yet</p>';
+                return;
+            }
+
+            const table = `
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f8f9fa; text-align: left;">
+                            <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Request Code</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Service</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Status</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Created</th>
+                            <th style="padding: 12px; border-bottom: 2px solid #dee2e6;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${requests.map(request => {
+                const isEditable = request.status === 'REQUESTED';
+                const editedBadge = request.updatedAt !== request.createdAt ?
+                    '<span style="color: #f39c12; font-size: 11px; margin-left: 8px;" title="This request has been edited">✏️ Edited</span>' : '';
+
+                const showProgress = request.status === 'IN_PROGRESS' || request.status === 'PAYMENT' || request.status === 'COMPLETED';
+
+                return `
+                                <tr style="border-bottom: 1px solid #dee2e6;">
+                                    <td style="padding: 12px; font-weight: 600;">${request.requestCode}</td>
+                                    <td style="padding: 12px;">
+                                        ${request.service?.name || 'N/A'}
+                                        ${editedBadge}
+                                    </td>
+                                    <td style="padding: 12px;">${getStatusBadge(request.status)}</td>
+                                    <td style="padding: 12px;">${formatDate(request.createdAt)}</td>
+                                    <td style="padding: 12px;">
+                                        <button class="btn-view" data-id="${request.id}" 
+                                            style="padding: 6px 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px;">
+                                            View
+                                        </button>
+                                        ${isEditable ? `
+                                            <button class="btn-edit" data-id="${request.id}" 
+                                                style="padding: 6px 12px; background: #f39c12; color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 8px;">
+                                                Edit
+                                            </button>
+                                        ` : ''}
+                                        ${showProgress ? `
+                                            <button class="btn-progress" data-id="${request.id}" 
+                                                style="padding: 6px 12px; background: #27ae60; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                                📋 Progress
+                                            </button>
+                                        ` : ''}
+                                    </td>
+                                </tr>
+                            `;
+            }).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            document.getElementById('requestsTable').innerHTML = table;
+
+            // Add event listeners
+            document.querySelectorAll('.btn-view').forEach(btn => {
+                btn.addEventListener('click', () => viewRequest(btn.dataset.id));
+            });
+
+            document.querySelectorAll('.btn-edit').forEach(btn => {
+                btn.addEventListener('click', () => editRequest(btn.dataset.id));
+            });
+
+            document.querySelectorAll('.btn-progress').forEach(btn => {
+                btn.addEventListener('click', () => viewProgress(btn.dataset.id));
+            });
+        };
+
+        // View request details
+        const viewRequest = async (id) => {
+            try {
+                const response = await requestAPI.getById(id);
+                if (response.success) {
+                    showRequestModal(response.request);
+                }
+            } catch (error) {
+                console.error('Error fetching request:', error);
+                alert('Failed to load request details');
+            }
+        };
+
+        // View progress
+        const viewProgress = (requestId) => {
+            window.location.href = `progress.html?requestId=${requestId}`;
+        };
+
+        // Edit request
+        const editRequest = async (id) => {
+            // For now, just redirect to edit page (to be implemented)
+            // Or open inline edit form
+            alert('Edit functionality coming soon! For now, contact admin to make changes.');
+        };
+
+        // Show request details modal (simple alert for now)
+        const showRequestModal = (request) => {
+            const details = `
+Request Code: ${request.requestCode}
+Service: ${request.service?.name}
+Status: ${request.status}
+Location: ${request.location || 'Not specified'}
+Description: ${request.description || 'Not provided'}
+Preferred Date: ${request.preferredDate ? formatDate(request.preferredDate) : 'Not specified'}
+Created: ${formatDate(request.createdAt)}
+${request.updatedAt !== request.createdAt ? `\nLast Updated: ${formatDate(request.updatedAt)}` : ''}
+            `;
+            alert(details);
+        };
+
+        // Load requests on page load
+        loadRequests();
     </script>
 </body>
 

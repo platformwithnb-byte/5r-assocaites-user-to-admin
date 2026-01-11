@@ -1,0 +1,38 @@
+# Frontend - Static HTML/CSS/JS served by Nginx
+FROM node:18-alpine AS builder
+
+WORKDIR /build
+
+# Copy frontend source
+COPY frontend ./
+
+# Build frontend (if needed - currently no build step)
+# For future: could add bundling here
+RUN echo "Frontend prepared"
+
+# Production stage - Lightweight Nginx server
+FROM nginx:alpine
+
+# Copy custom nginx config
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/default.conf /etc/nginx/conf.d/default.conf
+
+# Copy frontend files
+COPY --from=builder /build/public /usr/share/nginx/html
+COPY --from=builder /build/src /usr/share/nginx/html/src
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S nginx && \
+    adduser -S nginx -u 1001 && \
+    chown -R nginx:nginx /usr/share/nginx/html && \
+    chmod -R 755 /usr/share/nginx/html
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget --quiet --tries=1 --spider http://localhost:3000/ || exit 1
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

@@ -95,7 +95,8 @@
                     }, 1000);
                 }
             } catch (error) {
-                showNotification(error.data?.error || 'Login failed', 'error');
+                const errorMsg = error.data?.message || error.data?.error || error.message || 'Login failed';
+                showNotification(errorMsg, 'error');
             }
         });
     </script>

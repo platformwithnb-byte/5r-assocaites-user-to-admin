@@ -1,0 +1,22 @@
+{
+    "newRequest": "New Service Request",
+    "newRequestDesc": "Fill in the details below to submit your service request",
+    "backToDashboard": "Back to Dashboard",
+    "selectService": "Select Service",
+    "chooseService": "Choose a service...",
+    "selectServiceHelper": "Select the type of service you need",
+    "location": "Location",
+    "locationPlaceholder": "Enter job location",
+    "locationHelper": "Where should the work be done?",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe your requirements in detail...",
+    "descriptionHelper": "Provide as much detail as possible about your requirements",
+    "preferredDate": "Preferred Start Date",
+    "preferredDateHelper": "When would you like the work to start?",
+    "cancel": "Cancel",
+    "submitRequest": "Submit Request",
+    "submitting": "Submitting...",
+    "requestSubmitted": "Service request submitted successfully!",
+    "requestFailed": "Failed to submit request",
+    "pleaseSelectService": "Please select a service"
+}

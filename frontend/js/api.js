@@ -142,14 +142,16 @@ export const quotationAPI = {
 
 // Payment APIs
 export const paymentAPI = {
-    initiate: (data) => apiRequest('POST', '/payments/init', data),
+    initiate: (data) => apiRequest('POST', '/payments/initiate', data),
 
-    getStatus: (id) => apiRequest('GET', `/payments/${id}`),
+    verify: (data) => apiRequest('POST', '/payments/verify', data),
+
+    getById: (id) => apiRequest('GET', `/payments/${id}`),
+
+    getByRequestId: (requestId) =>
+        apiRequest('GET', `/payments/request/${requestId}`),
 
     list: () => apiRequest('GET', '/payments'),
-
-    listByRequest: (requestId) =>
-        apiRequest('GET', `/payments/request/${requestId}`),
 };
 
 // Work Progress APIs
@@ -179,6 +181,54 @@ export const progressAPI = {
 
     getByRequestId: (requestId) =>
         apiRequest('GET', `/progress/request/${requestId}`),
+
+    list: () =>
+        apiRequest('GET', '/progress'),
+
+    delete: (id) =>
+        apiRequest('DELETE', `/progress/${id}`),
+
+    markAsCompleted: (requestId) =>
+        apiRequest('PUT', `/progress/complete/${requestId}`),
+};
+
+// Advance Payment APIs
+export const advancePaymentAPI = {
+    request: (data) =>
+        apiRequest('POST', '/advance-payments', data),
+
+    getByRequest: (requestId) =>
+        apiRequest('GET', `/advance-payments/request/${requestId}`),
+
+    approve: (advanceId) =>
+        apiRequest('PUT', `/advance-payments/${advanceId}/approve`),
+
+    markAsPaid: (advanceId) =>
+        apiRequest('PUT', `/advance-payments/${advanceId}/paid`),
+
+    list: () =>
+        apiRequest('GET', '/advance-payments'),
+};
+
+// Invoice APIs
+export const invoiceAPI = {
+    generate: (data) =>
+        apiRequest('POST', '/invoices', data),
+
+    get: (invoiceId) =>
+        apiRequest('GET', `/invoices/${invoiceId}`),
+
+    getByRequest: (requestId) =>
+        apiRequest('GET', `/invoices/request/${requestId}`),
+
+    markAsPaid: (invoiceId) =>
+        apiRequest('PUT', `/invoices/${invoiceId}/paid`),
+
+    list: () =>
+        apiRequest('GET', '/invoices'),
+
+    getCompanyInfo: () =>
+        apiRequest('GET', '/invoices/company-info'),
 };
 
 // PDF APIs
@@ -208,6 +258,6 @@ export default {
     quotationAPI,
     paymentAPI,
     progressAPI,
-    pdfAPI,
-    reminderAPI,
-};
+    advancePaymentAPI,
+    invoiceAPI,
+}

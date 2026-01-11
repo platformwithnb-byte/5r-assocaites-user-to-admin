@@ -16,6 +16,7 @@
                 <nav class="nav">
                     <a href="dashboard.html" data-i18n="dashboard.allServices">All Services</a>
                     <a href="quotation.html" data-i18n="dashboard.myQuotations">Create Quotation</a>
+                    <a href="progress.html">Work Progress</a>
                     <div class="language-switcher">
                         <button class="lang-btn" data-lang-toggle="en">EN</button>
                         <button class="lang-btn" data-lang-toggle="kn">KN</button>
@@ -45,6 +46,13 @@
                 <p data-i18n="dashboard.noData">No data available</p>
             </div>
         </div>
+
+        <div class="card">
+            <div class="card-header">All Service Requests</div>
+            <div id="requestsTable">
+                <p>Loading requests...</p>
+            </div>
+        </div>
     </div>
 
     <footer>
@@ -53,7 +61,8 @@
 
     <script type="module">
         import { initI18n, setupLanguageSwitcher } from '../../js/i18n.js';
-        import { requireAuth, logoutUser, getUserData } from '../../js/utils.js';
+        import { requireAuth, logoutUser, getUserData, formatDate, getStatusBadge } from '../../js/utils.js';
+        import { requestAPI } from '../../js/api.js';
 
         // Protect page
         requireAuth();
@@ -72,6 +81,113 @@
         document.getElementById('logoutBtn').addEventListener('click', () => {
             logoutUser();
         });
+
+        // Load all requests for admin
+        const loadRequests = async () => {
+            try {
+                const response = await requestAPI.list();
+
+                if (response.success && response.requests && response.requests.length) {
+                    renderRequests(response.requests);
+                    renderPendingQuotations(response.requests);
+                } else {
+                    document.getElementById('requestsTable').innerHTML = '<p>No requests found.</p>';
+                    document.getElementById('quotationsTable').innerHTML = '<p>No quotations found.</p>';
+                }
+            } catch (error) {
+                console.error('Failed to load requests:', error);
+                document.getElementById('requestsTable').innerHTML = '<p style="color:#e74c3c;">Failed to load requests.</p>';
+                document.getElementById('quotationsTable').innerHTML = '<p style="color:#e74c3c;">Failed to load quotations.</p>';
+            }
+        };
+
+        const renderPendingQuotations = (requests) => {
+            const pending = [];
+
+            requests.forEach((req) => {
+                (req.quotations || []).forEach((q) => {
+                    if (q.status === 'PENDING') {
+                        pending.push({
+                            quotationNumber: q.quotationNumber,
+                            totalAmount: q.totalAmount,
+                            status: q.status,
+                            requestCode: req.requestCode,
+                            serviceName: req.service?.name || 'N/A',
+                            userEmail: req.user?.email || 'N/A',
+                            createdAt: q.createdAt || req.createdAt,
+                        });
+                    }
+                });
+            });
+
+            if (!pending.length) {
+                document.getElementById('quotationsTable').innerHTML = '<p>No pending quotations.</p>';
+                return;
+            }
+
+            const rows = pending.map((q) => {
+                return `
+                    <tr style="border-bottom:1px solid #dee2e6;">
+                        <td style="padding:10px; font-weight:600;">${q.quotationNumber || '—'}</td>
+                        <td style="padding:10px;">${q.requestCode}</td>
+                        <td style="padding:10px;">${q.serviceName}</td>
+                        <td style="padding:10px;">${q.userEmail}</td>
+                        <td style="padding:10px;">₹${(q.totalAmount || 0).toLocaleString('en-IN')}</td>
+                        <td style="padding:10px;">${q.status}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('quotationsTable').innerHTML = `
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr style="background:#f8f9fa; text-align:left;">
+                            <th style="padding:10px; border-bottom:2px solid #dee2e6;">Quotation</th>
+                            <th style="padding:10px; border-bottom:2px solid #dee2e6;">Request</th>
+                            <th style="padding:10px; border-bottom:2px solid #dee2e6;">Service</th>
+                            <th style="padding:10px; border-bottom:2px solid #dee2e6;">User</th>
+                            <th style="padding:10px; border-bottom:2px solid #dee2e6;">Total</th>
+                            <th style="padding:10px; border-bottom:2px solid #dee2e6;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows}
+                    </tbody>
+                </table>
+            `;
+        };
+
+        const renderRequests = (requests) => {
+            const rows = requests.map((req) => {
+                return `
+                    <tr style="border-bottom:1px solid #dee2e6;">
+                        <td style="padding:10px; font-weight:600;">${req.requestCode}</td>
+                        <td style="padding:10px;">${req.service?.name || 'N/A'}</td>
+                        <td style="padding:10px;">${req.user?.email || 'N/A'}</td>
+                        <td style="padding:10px;">${getStatusBadge(req.status)}</td>
+                        <td style="padding:10px;">${formatDate(req.createdAt)}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('requestsTable').innerHTML = `
+                <table style=\"width:100%; border-collapse:collapse;\">
+                    <thead>
+                        <tr style=\"background:#f8f9fa; text-align:left;\">
+                            <th style=\"padding:10px; border-bottom:2px solid #dee2e6;\">Request Code</th>
+                            <th style=\"padding:10px; border-bottom:2px solid #dee2e6;\">Service</th>
+                            <th style=\"padding:10px; border-bottom:2px solid #dee2e6;\">User</th>
+                            <th style=\"padding:10px; border-bottom:2px solid #dee2e6;\">Status</th>
+                            <th style=\"padding:10px; border-bottom:2px solid #dee2e6;\">Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            `;
+        };
+
+        // Run on load
+        loadRequests();
     </script>
 </body>
 
